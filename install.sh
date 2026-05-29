@@ -10,6 +10,35 @@ err() { printf '\nError: %s\n' "$*" >&2; }
 
 has_cmd() { command -v "$1" >/dev/null 2>&1; }
 
+read_from_tty() {
+  local prompt="$1"
+  local __resultvar="$2"
+  local value=""
+
+  if [[ -r /dev/tty ]]; then
+    read -r -p "$prompt" value </dev/tty || true
+  else
+    read -r -p "$prompt" value || true
+  fi
+
+  printf -v "$__resultvar" '%s' "$value"
+}
+
+read_secret_from_tty() {
+  local prompt="$1"
+  local __resultvar="$2"
+  local value=""
+
+  if [[ -r /dev/tty ]]; then
+    read -r -s -p "$prompt" value </dev/tty || true
+  else
+    read -r -s -p "$prompt" value || true
+  fi
+  printf '\n' >/dev/tty 2>/dev/null || printf '\n'
+
+  printf -v "$__resultvar" '%s' "$value"
+}
+
 ask_yes_no() {
   local prompt="$1"
   local default="${2:-y}"
@@ -17,7 +46,7 @@ ask_yes_no() {
   [[ "$default" == "n" ]] && suffix="[y/N]"
 
   local reply
-  read -r -p "$prompt $suffix " reply || true
+  read_from_tty "$prompt $suffix " reply
   reply="${reply:-$default}"
   [[ "$reply" =~ ^[Yy]$ ]]
 }
@@ -46,8 +75,7 @@ install_skills() {
     echo "Node.js download: https://nodejs.org/"
     exit 1
   fi
-
-  npx -y skills add "$REPO_URL"
+  npx -y skills add "$REPO_URL" --global --all
 }
 
 install_jira_cli() {
@@ -86,8 +114,17 @@ configure_jira_cli() {
     return
   fi
 
+  if jira me >/dev/null 2>&1; then
+    say "jira CLI is already configured."
+    return
+  fi
+
   if ask_yes_no "Run 'jira init' now to configure the Jira CLI account?" "y"; then
-    jira init || warn "jira init did not complete successfully. You can rerun it later with: jira init"
+    if [[ -r /dev/tty && -w /dev/tty ]]; then
+      jira init </dev/tty >/dev/tty || warn "jira init did not complete successfully. You can rerun it later with: jira init"
+    else
+      jira init || warn "jira init did not complete successfully. You can rerun it later with: jira init"
+    fi
   fi
 }
 
@@ -100,10 +137,9 @@ write_env_file() {
   local email=""
   local token=""
 
-  read -r -p "Jira base URL, for example https://jira.example.com: " base_url || true
-  read -r -p "Jira email: " email || true
-  read -r -s -p "Jira API token, input hidden: " token || true
-  printf '\n'
+  read_from_tty "Jira base URL, for example https://jira.example.com: " base_url
+  read_from_tty "Jira email: " email
+  read_secret_from_tty "Jira API token, input hidden: " token
 
   mkdir -p "$(dirname "$ENV_FILE")"
   umask 077

@@ -28,7 +28,7 @@ function Install-Skills {
         Write-Error "npx was not found. Install Node.js first, then rerun this installer. Download: https://nodejs.org/"
     }
 
-    & npx -y skills add $RepoUrl
+    & npx -y skills add $RepoUrl --global --all
     if ($LASTEXITCODE -ne 0) {
         throw "skills installation failed"
     }
@@ -67,6 +67,12 @@ function Install-JiraCli {
 
 function Configure-JiraCli {
     if (-not (Test-Command "jira")) {
+        return
+    }
+
+    & jira me *> $null
+    if ($LASTEXITCODE -eq 0) {
+        Write-Section "jira CLI is already configured."
         return
     }
 

@@ -24,8 +24,7 @@ Exit codes:
 
 Env vars:
   JIRA_API_TOKEN must be set
-  JIRA_BASE_URL must be set for attachment downloads
-  JIRA_EMAIL must be set for attachment downloads
+  Jira server and email are read from the jira CLI config
 
 Examples:
   # Download all attachments to default directory

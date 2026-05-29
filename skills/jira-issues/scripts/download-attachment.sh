@@ -11,14 +11,31 @@ Required:
   --issue     Jira issue key (e.g., PROJ-123)
 
 Optional:
-  --base-url  Jira base URL (default: $JIRA_BASE_URL)
-  --email     Jira account email for basic auth (default: $JIRA_EMAIL)
+  --base-url  Jira base URL (default: read from jira CLI config)
+  --email     Jira account email for basic auth (default: read from jira CLI config)
 
 Env vars:
   JIRA_API_TOKEN must be set
-  JIRA_BASE_URL must be set unless --base-url is provided
-  JIRA_EMAIL must be set unless --email is provided
+  JIRA_CONFIG_FILE may point to a custom jira CLI config file
 EOF
+}
+
+read_jira_config_value() {
+  local key="$1"
+  local config_file="${JIRA_CONFIG_FILE:-${HOME}/.config/.jira/.config.yml}"
+
+  [[ -f "$config_file" ]] || return 1
+
+  awk -F': *' -v key="$key" '
+    $1 == key {
+      value = $0
+      sub("^[^:]+:[[:space:]]*", "", value)
+      gsub(/^\"|\"$/, "", value)
+      gsub(/^'"'"'|'"'"'$/, "", value)
+      print value
+      exit
+    }
+  ' "$config_file"
 }
 
 attachment_id=""
@@ -73,12 +90,20 @@ if [[ -z "${JIRA_API_TOKEN:-}" ]]; then
 fi
 
 if [[ -z "$base_url" ]]; then
-  echo "Missing Jira base URL. Set JIRA_BASE_URL or pass --base-url." >&2
+  base_url="$(read_jira_config_value server || true)"
+fi
+
+if [[ -z "$email" ]]; then
+  email="$(read_jira_config_value login || true)"
+fi
+
+if [[ -z "$base_url" ]]; then
+  echo "Missing Jira base URL. Run 'jira init' or pass --base-url." >&2
   exit 1
 fi
 
 if [[ -z "$email" ]]; then
-  echo "Missing Jira email. Set JIRA_EMAIL or pass --email." >&2
+  echo "Missing Jira email. Run 'jira init' or pass --email." >&2
   exit 1
 fi
 
@@ -111,3 +136,4 @@ mkdir -p "$output_dir"
 output_path="${output_dir%/}/${output_file}"
 
 curl -L --fail --show-error -H "$auth_header" -o "$output_path" "$attachment_url"
+echo "$output_path"

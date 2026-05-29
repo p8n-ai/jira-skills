@@ -137,9 +137,7 @@ fi
 **Environment Variables** (Required):
 - `JIRA_API_TOKEN`: API token for authentication
 
-**Environment Variables** (Optional):
-- `JIRA_BASE_URL`: Base URL for the Jira instance (required for attachment downloads unless passed as `--base-url`)
-- `JIRA_EMAIL`: Jira account email (required for attachment downloads unless passed as `--email`)
+The Jira server and email are read from the `jira` CLI config created by `jira init`.
 
 **Exit Codes**:
 - `0`: All attachments downloaded successfully

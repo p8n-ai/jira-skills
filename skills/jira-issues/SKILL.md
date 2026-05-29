@@ -234,9 +234,7 @@ The Jira CLI does not support attachments. Use the helper script and pass the is
 ./scripts/download-attachment.sh \
   --id 22303 \
   --issue PROJ-123 \
-  --out ./.tmp/ \
-  --base-url "$JIRA_BASE_URL" \
-  --email "$JIRA_EMAIL"
+  --out ./.tmp/
 ```
 
 Argument notes:
@@ -245,13 +243,13 @@ Argument notes:
 - `--issue` is the Jira ticket key (e.g., `PROJ-123`).
 - `--out` is the output path or directory. If a directory, the filename is inferred from metadata.
 
-Required env vars:
+Required env var:
 
 ```sh
 export JIRA_API_TOKEN="..."
-export JIRA_BASE_URL="https://jira.example.com"
-export JIRA_EMAIL="you@example.com"
 ```
+
+The Jira server and email are read from the `jira` CLI config created by `jira init`.
 
 ### Get Current User
 

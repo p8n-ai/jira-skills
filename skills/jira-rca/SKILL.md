@@ -448,8 +448,6 @@ Fallbacks provided if scripts unavailable.
 | Variable | Required | Usage |
 |----------|----------|-------|
 | `JIRA_API_TOKEN` | Optional | Attachment downloads |
-| `JIRA_BASE_URL` | Optional | Custom Jira instance |
-| `JIRA_EMAIL` | Optional | API authentication |
 
 ## Troubleshooting
 

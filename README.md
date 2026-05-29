@@ -21,7 +21,7 @@ The installer will:
 - Install the Jira skills.
 - Help install the `jira` CLI if needed.
 - Offer to run `jira init`.
-- Ask for Jira API details used for attachment downloads.
+- Ask for an optional Jira API token for attachment downloads.
 
 After installation, open a new terminal before using the skills.
 
@@ -33,17 +33,13 @@ After installation, open a new terminal before using the skills.
 
 The installer can help with the `jira` CLI setup.
 
-## Jira API details
+## Jira API token
 
-During installation, you may be asked for:
+For attachment downloads, the installer may ask for an optional Jira API token:
 
 ```bash
-JIRA_BASE_URL="https://jira.example.com"
-JIRA_EMAIL="you@example.com"
 JIRA_API_TOKEN="your-api-token"
 ```
-
-These are stored on your machine for future terminal sessions.
 
 ## Included skills
 

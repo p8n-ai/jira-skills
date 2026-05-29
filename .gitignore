@@ -1,0 +1,24 @@
+# macOS
+.DS_Store
+
+# Local environment and secrets
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Logs and temp files
+*.log
+.tmp/
+tmp/
+.cache/
+
+# Dependencies / build output
+node_modules/
+dist/
+build/
+
+# Generated skill packages; remove this if you want to publish packaged artifacts.
+*.skill

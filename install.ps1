@@ -147,11 +147,12 @@ function Main {
     Write-Section "Jira Skills Installer"
     Install-Skills
     Install-JiraCli
-    Configure-JiraCli
 
     if (Ask-YesNo "Set Jira API token environment variable now?" $true) {
         Write-EnvFile
     }
+
+    Configure-JiraCli
 
     Write-Section "Installation complete."
     Write-Host "Open a new PowerShell window, or run: . `"$EnvFile`""

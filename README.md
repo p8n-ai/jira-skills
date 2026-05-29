@@ -20,8 +20,8 @@ The installer will:
 
 - Install the Jira skills.
 - Help install the `jira` CLI if needed.
+- Ask for an optional Jira API token.
 - Offer to run `jira init`.
-- Ask for an optional Jira API token for attachment downloads.
 
 After installation, open a new terminal before using the skills.
 

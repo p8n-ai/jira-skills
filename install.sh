@@ -173,11 +173,12 @@ main() {
   say "Jira Skills Installer"
   install_skills
   install_jira_cli
-  configure_jira_cli
 
   if ask_yes_no "Set Jira API token environment variable now?" "y"; then
     write_env_file
   fi
+
+  configure_jira_cli
 
   say "Installation complete."
   echo "Open a new terminal, or run: source \"$ENV_FILE\""
